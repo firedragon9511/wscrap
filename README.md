@@ -9,10 +9,10 @@
 
 
 
-Usage:
-        node wscrap.js -u [URL] [OPTIONS]
+    Usage:
+            node wscrap.js -u [URL] [OPTIONS]
 
-Options:
+    Options:
 
         -h              Help
         -u              Specify the URL
