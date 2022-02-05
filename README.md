@@ -9,7 +9,7 @@
 
 
 
-    Usage:
+    Usage: A
             node wscrap.js -u [URL] [OPTIONS]
 
     Options:
