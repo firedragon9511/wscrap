@@ -1,4 +1,4 @@
-    __    __  _____   __  ____    ____  ____
+<h6>    __    __  _____   __  ____    ____  ____
     |  |__|  |/ ___/  /  ]|    \  /    ||    \
     |  |  |  (   \_  /  / |  D  )|  o  ||  o  )
     |  |  |  |\__  |/  /  |    / |     ||   _/
@@ -19,3 +19,4 @@ Options:
         -c              Extract containing
         -n              Extract not containing
         -t              Custom html attribute. Default: href.
+</h6>
