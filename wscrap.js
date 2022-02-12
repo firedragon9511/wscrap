@@ -10,9 +10,31 @@ function WSCrap (){
     this.regexMatchHREF =  /href=(["'])(?:(?=(\\?))\2.)*?\1/gi // /HREF=("|')([^"]*)("|')[^>]*>/gi ///HREF="([^"]*)"[^>]*>/gi;
     this.regexMatchAction = /action=(["'])(?:(?=(\\?))\2.)*?\1/gi; // /action=("|')([^"]*)("|')[^>]*>/gi; // /action="([^"]*)"[^>]*>/gi;
     this.regexMatchCustomAttribute = "{attribute}=([\"'])(?:(?=(\\\\?))\\2.)*?\\1";
-    this.matchQuoteContent = /(["'])(?:(?=(\\?))\2.)*?\1/i // /\".+\"/i;
+    this.matchQuoteContent = /(["'])(?:(?=(\\?))\2.)*?\1/i; // /\".+\"/i;
+    this.matchHTMLComments = /<!--[^>]*-->/gm;
+    //this.matchFileName = /[^\\]*\.(\w+)$/
 
     this.encoding = "utf8";
+
+    this.optionsTemplate = {
+        host: "proxy",
+        //port: 8080,
+        //path: "/",
+        headers: {
+            
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
+        }
+      };
+
+    this.RequestWithOptions = (url, callback) => {
+        var options = this.optionsTemplate;
+        options.host = url;
+        console.log(options);
+        http.get(options, function(res) {
+            console.log(res);
+            res.pipe(process.stdout);
+          });
+    }
 
     /**
      * @param {String} url
@@ -35,6 +57,16 @@ function WSCrap (){
                 });
             });
         }
+    }
+
+    /**
+     * 
+     * @param {String} html 
+     */
+    this.ScrapComments = (html) => {
+        var matches = html.match(this.matchHTMLComments);
+        //console.log(matches);
+        return matches
     }
 
     /**
@@ -93,7 +125,7 @@ function WSCrap (){
         //console.log(this.regexMatchCustomAttribute.replace("{attribute}", attribute));
         var matches = html.match(new RegExp(this.regexMatchCustomAttribute.replace("{attribute}", attribute), "gi"));
         var links = [];
-        //console.log(matches);
+        //console.log(html);
         if(matches == null) return [""];
         matches.forEach(element => {
             var link = element.match(this.matchQuoteContent);
@@ -114,6 +146,12 @@ function WSCrap (){
     }
 }
 
+/*new WSCrap().RequestWithOptions(urlTest, (data)=>{
+    console.log(data);
+});*/
+
+//return;
+
 var randomVal =  "amdoenficvndj8sufne83nsxnmcspw90ms93ns9cnfv84nw8snc";
 
 var help = new HelpBuilder();
@@ -124,6 +162,8 @@ help.AddParam("\t-u", "Specify the URL");
 help.AddParam("\t-c", "Extract containing");
 help.AddParam("\t-n", "Extract not containing");
 help.AddParam("\t-t", "Custom html attribute. Default: href.");
+help.AddParam("\t-m", "Extract comments");
+
 
 
 if(process.argv.length <= 2){
@@ -141,6 +181,7 @@ if(argumentParser.HasParam("-h")){
 console.log(help.GetBanner());
 
 
+
 url = argumentParser.GetParamValue("-u", "#error");
 contains =  argumentParser.GetParamValue("-c", "");
 rtype = argumentParser.GetParamValue("-t", "href");;
@@ -153,21 +194,14 @@ scraper.Request(url, (data)=>{
 
     var result;
 
-    result = scraper.ScrapContaining(data, contains, rtype);
-
-    /*switch(rtype.toLowerCase()){
-        case "href":
-            result = scraper.ScrapLinksContaining(data, contains);
-            break;
-        case "action":
-    //console.log(data);
-            result = scraper.ScrapActionsContaining(data, contains);
-            break;
-    }*/
-
+    if(argumentParser.HasParam("-m")){
+        result = scraper.ScrapComments(data);
+        //return;
+    } else {
+        result = scraper.ScrapContaining(data, contains, rtype);
+    }
 
     result.forEach(element => {
-        //console.log("sadsad");
 
         if(randomVal == notContains){
             console.log(element.replace(/"/gi, ""));
@@ -177,9 +211,6 @@ scraper.Request(url, (data)=>{
             if(v != "")
                 console.log(v);
         }
-            //console.log(WSCrap.ReturnIfNotContains(element.replace(/"/gi, ""), notContains));
-
-
     });
 
 });
