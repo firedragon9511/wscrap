@@ -196,6 +196,9 @@ scraper.Request(url, (data)=>{
 
     result = scraper.ScrapContaining(data, contains, rtype);
     if(argumentParser.HasParam("-m")){
+        if(argumentParser.HasParam("-s")){
+            console.log(data);
+        }
         result = scraper.ScrapComments(data);
         //return;
     } else {
