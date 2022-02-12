@@ -19,4 +19,5 @@
         -c              Extract containing
         -n              Extract not containing
         -t              Custom html attribute. Default: href.
+        -m              Extract comments
         
