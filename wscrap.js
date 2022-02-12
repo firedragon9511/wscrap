@@ -194,17 +194,16 @@ scraper.Request(url, (data)=>{
 
     var result;
 
-    result = scraper.ScrapContaining(data, contains, rtype);
     if(argumentParser.HasParam("-m")){
         if(argumentParser.HasParam("-s")){
             console.log(data);
         }
-        console.log(result);
+        //console.log(result);
 
         result = scraper.ScrapComments(data);
         //return;
     } else {
-        //result = scraper.ScrapContaining(data, contains, rtype);
+        result = scraper.ScrapContaining(data, contains, rtype);
     }
 
     result.forEach(element => {
